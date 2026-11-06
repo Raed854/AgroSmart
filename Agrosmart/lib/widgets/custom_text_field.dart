@@ -9,11 +9,12 @@ class CustomTextField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.icon,
-    required this.validator,
+    this.validator,
     this.keyboardType,
     this.obscureText = false,
     this.suffixIcon,
     this.textInputAction = TextInputAction.next,
+    this.maxLines = 1,
   });
 
   final TextEditingController controller;
@@ -23,8 +24,9 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool obscureText;
   final Widget? suffixIcon;
-  final String? Function(String?) validator;
+  final String? Function(String?)? validator;
   final TextInputAction textInputAction;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       textInputAction: textInputAction,
+      maxLines: maxLines,
       style: const TextStyle(
         color: inkGreen,
         fontSize: 14,
