@@ -1,46 +1,82 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../services/parcelle_repository.dart';
 import 'cultures_screen.dart';
 import 'irrigation_screen.dart';
 import 'materiels_screen.dart';
-import 'parcelles_screen.dart';
+import 'parcelles/parcelles_list_screen.dart';
 import 'profile_screen.dart';
 import 'recoltes_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final _parcelleRepository = ParcelleRepository();
+  
+  int _parcelleCount = 0;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDashboardData();
+  }
+
+  Future<void> _loadDashboardData() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      final parcelleCount = await _parcelleRepository.count();
+      
+      setState(() {
+        _parcelleCount = parcelleCount;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final actions = [
       _DashboardAction(
         'Parcelles',
-        '4 plots',
+        _isLoading
+            ? 'Chargement...'
+            : '$_parcelleCount parcelle${_parcelleCount > 1 ? 's' : ''}',
         Icons.landscape_outlined,
-        const ParcellesScreen(),
+        const ParcellesListScreen(),
       ),
       _DashboardAction(
         'Cultures',
-        '8 active crops',
+        'Bientôt disponible',
         Icons.grass_rounded,
         const CulturesScreen(),
       ),
       _DashboardAction(
         'Récoltes',
-        'Next in 12 days',
+        'Bientôt disponible',
         Icons.agriculture_rounded,
         const RecoltesScreen(),
       ),
       _DashboardAction(
         'Irrigation',
-        'System ready',
+        'Système prêt',
         Icons.water_drop_outlined,
         const IrrigationScreen(),
       ),
       _DashboardAction(
         'Matériels',
-        '6 equipment items',
+        '6 équipements',
         Icons.handyman_outlined,
         const MaterielsScreen(),
       ),
@@ -56,6 +92,11 @@ class DashboardScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
+            tooltip: 'Actualiser',
+            onPressed: _loadDashboardData,
+            icon: const Icon(Icons.refresh, color: inkGreen),
+          ),
+          IconButton(
             tooltip: 'Profile',
             onPressed: () => Navigator.push(
               context,
@@ -70,7 +111,7 @@ class DashboardScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           children: [
             const Text(
-              'Good morning, farmer 👋',
+              'Bonjour, agriculteur 👋',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 24,
@@ -78,7 +119,7 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            const Text('Here is your farm at a glance today.'),
+            const Text('Voici votre ferme en un coup d\'œil aujourd\'hui.'),
             const SizedBox(height: 24),
             Container(
               padding: const EdgeInsets.all(20),
@@ -92,7 +133,7 @@ class DashboardScreen extends StatelessWidget {
                   SizedBox(width: 16),
                   Expanded(
                     child: Text(
-                      '24°C  •  Clear skies\nPerfect conditions for field work.',
+                      '24°C  •  Ciel dégagé\nConditions parfaites pour le travail aux champs.',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -105,7 +146,7 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Farm management',
+              'Gestion de la ferme',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 18,
@@ -140,10 +181,14 @@ class DashboardScreen extends StatelessWidget {
                   ),
                   subtitle: Text(action.subtitle),
                   trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => action.screen),
-                  ),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => action.screen),
+                    );
+                    // Reload data when returning from a screen
+                    _loadDashboardData();
+                  },
                 ),
               ),
             ),
