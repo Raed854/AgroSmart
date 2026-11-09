@@ -28,3 +28,6 @@ build/
 # Local secrets (OpenAI key), read at startup by lib/config/app_config.dart
 env.json
 assets/config/env.json
+
+# Environment variables - NEVER commit .env
+.env

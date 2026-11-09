@@ -11,6 +11,7 @@ import 'irrigation_screen.dart';
 import 'maintenance_screen.dart';
 import 'materiels_screen.dart';
 import 'parcel_health_map_screen.dart';
+import 'parcelles/parcelles_list_screen.dart';
 import 'profile_screen.dart';
 import 'stock_assistant_screen.dart';
 import 'stocks_screen.dart';
@@ -44,6 +45,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final user = AuthService.currentUser;
     final actions = [
+      const _DashboardAction(
+        'Parcelles',
+        'Gérer vos parcelles et l’assistant IA',
+        Icons.landscape_outlined,
+        ParcellesListScreen(),
+        0,
+      ),
       _DashboardAction(
         'Stocks',
         _stockAlertCount > 0
