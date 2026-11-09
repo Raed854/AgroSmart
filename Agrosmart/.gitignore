@@ -16,3 +16,6 @@ local.properties
 
 .dart_tool/
 .flutter-plugins-dependencies
+
+# Environment variables - NEVER commit .env
+.env

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
@@ -11,7 +12,8 @@ const mutedGreen = Color(0xFF6E7F72);
 const pageBackground = Color(0xFFF8F7F1);
 const borderGreen = Color(0xFFE4E9E1);
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: '.env');
   runApp(const AgroSmartApp());
 }
 

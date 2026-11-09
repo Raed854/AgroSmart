@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../main.dart';
 import '../../models/parcelle_model.dart';
+import '../../services/groq_ai_service.dart';
 import '../../services/parcelle_ai_service.dart';
 import '../../services/parcelle_repository.dart';
 import 'parcelle_form_screen.dart';
@@ -18,15 +20,29 @@ class ParcelleDetailScreen extends StatefulWidget {
 class _ParcelleDetailScreenState extends State<ParcelleDetailScreen> {
   final _parcelleRepository = ParcelleRepository();
   final _aiService = ParcelleAIService();
+  late final _groqService = GroqAIService(
+    apiKey: dotenv.env['GROQ_API_KEY'] ?? '',
+  );
   
   List<ParcelleModel> _allParcelles = [];
   bool _isLoadingParcelles = true;
+  bool _isLoadingGroqAnalysis = false;
+  String? _groqAnalysis;
+  bool _showGroqAnalysis = false;
 
   @override
   void initState() {
     super.initState();
     _loadAllParcelles();
   }
+
+  @override
+  void dispose() {
+    _groqService.dispose();
+    super.dispose();
+  }
+
+
 
   Future<void> _loadAllParcelles() async {
     setState(() => _isLoadingParcelles = true);
@@ -40,6 +56,46 @@ class _ParcelleDetailScreenState extends State<ParcelleDetailScreen> {
       setState(() => _isLoadingParcelles = false);
     }
   }
+
+  Future<void> _requestGroqAnalysis() async {
+    print('DEBUG: Button clicked!');
+    print('DEBUG: API Key from env: ${dotenv.env['GROQ_API_KEY']?.substring(0, 10)}...');
+    
+    setState(() {
+      _isLoadingGroqAnalysis = true;
+      _showGroqAnalysis = true;
+      _groqAnalysis = null;
+    });
+
+    try {
+      final anomalies = _aiService.detectAnomalies(widget.parcelle, _allParcelles);
+      print('DEBUG: Anomalies detected: ${anomalies.length}');
+      
+      final analysis = await _groqService.analyzeParcelle(
+        widget.parcelle,
+        anomalies,
+      );
+      
+      print('DEBUG: Analysis result: ${analysis?.substring(0, 50)}...');
+
+      if (mounted) {
+        setState(() {
+          _groqAnalysis = analysis;
+          _isLoadingGroqAnalysis = false;
+        });
+      }
+    } catch (e) {
+      print('DEBUG: Error occurred: $e');
+      if (mounted) {
+        setState(() {
+          _groqAnalysis = null;
+          _isLoadingGroqAnalysis = false;
+        });
+      }
+    }
+  }
+
+
 
   Future<void> _deleteParcelle() async {
     final confirm = await showDialog<bool>(
@@ -332,6 +388,119 @@ class _ParcelleDetailScreenState extends State<ParcelleDetailScreen> {
               ),
             ],
             
+            // Bouton Analyse détaillée (IA)
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _isLoadingGroqAnalysis ? null : _requestGroqAnalysis,
+                icon: _isLoadingGroqAnalysis
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFFEF6C00),
+                        ),
+                      )
+                    : const Icon(Icons.psychology_outlined),
+                label: Text(_isLoadingGroqAnalysis
+                    ? 'Analyse en cours...'
+                    : 'Analyse détaillée (IA)'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFEF6C00),
+                  side: const BorderSide(color: Color(0xFFFFCC80)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            
+            // Résultat de l'analyse Groq
+            if (_showGroqAnalysis) ...[
+              const SizedBox(height: 16),
+              const Divider(color: Color(0xFFFFCC80)),
+              const SizedBox(height: 16),
+              if (_isLoadingGroqAnalysis)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(
+                      color: Color(0xFFEF6C00),
+                    ),
+                  ),
+                )
+              else if (_groqAnalysis != null)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFFFCC80)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.auto_awesome,
+                            size: 18,
+                            color: Color(0xFFEF6C00),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Analyse IA détaillée',
+                            style: TextStyle(
+                              color: const Color(0xFFEF6C00),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        _groqAnalysis!,
+                        style: const TextStyle(
+                          color: Color(0xFF6D4C41),
+                          fontSize: 13,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFFFCC80)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        size: 18,
+                        color: Color(0xFFF57C00),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Mode démo activé. Les suggestions sont basées sur des règles locales.',
+                          style: TextStyle(
+                            color: const Color(0xFF6D4C41),
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+
             // Disclaimer
             const SizedBox(height: 16),
             Container(
