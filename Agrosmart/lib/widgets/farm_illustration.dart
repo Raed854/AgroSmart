@@ -96,19 +96,11 @@ class _FarmPainter extends CustomPainter {
       final base = Offset(x, size.height * .79);
       canvas.drawLine(base, base.translate(0, -27), stem);
       canvas.drawOval(
-        Rect.fromCenter(
-          center: base.translate(-6, -25),
-          width: 13,
-          height: 7,
-        ),
+        Rect.fromCenter(center: base.translate(-6, -25), width: 13, height: 7),
         leaf,
       );
       canvas.drawOval(
-        Rect.fromCenter(
-          center: base.translate(6, -18),
-          width: 13,
-          height: 7,
-        ),
+        Rect.fromCenter(center: base.translate(6, -18), width: 13, height: 7),
         leaf,
       );
     }

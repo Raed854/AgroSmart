@@ -9,7 +9,7 @@ class ManagementScaffold extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.items,
+    this.items = const [],
   });
 
   final String title;
@@ -61,6 +61,23 @@ class ManagementScaffold extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+            if (items.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 32),
+                child: Column(
+                  children: [
+                    Icon(Icons.inbox_outlined, color: mutedGreen, size: 48),
+                    SizedBox(height: 12),
+                    Text(
+                      'Aucune donnée pour le moment',
+                      style: TextStyle(
+                        color: inkGreen,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ...items.map(
               (item) => Card(
                 margin: const EdgeInsets.only(bottom: 12),

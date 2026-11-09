@@ -1,48 +1,71 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
-import 'cultures_screen.dart';
+import '../services/auth_service.dart';
+import 'drone_ai_screen.dart';
+import 'drone_form_screen.dart';
+import 'equipment_analytics_screen.dart';
+import 'irrigation_planning_screen.dart';
 import 'irrigation_screen.dart';
+import 'maintenance_screen.dart';
 import 'materiels_screen.dart';
-import 'parcelles_screen.dart';
+import 'parcel_health_map_screen.dart';
 import 'profile_screen.dart';
-import 'recoltes_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = AuthService.currentUser;
     final actions = [
       _DashboardAction(
-        'Parcelles',
-        '4 plots',
-        Icons.landscape_outlined,
-        const ParcellesScreen(),
-      ),
-      _DashboardAction(
-        'Cultures',
-        '8 active crops',
-        Icons.grass_rounded,
-        const CulturesScreen(),
-      ),
-      _DashboardAction(
-        'Récoltes',
-        'Next in 12 days',
-        Icons.agriculture_rounded,
-        const RecoltesScreen(),
+        'Parcel Health Map',
+        'AI anomaly detection',
+        Icons.map_outlined,
+        const ParcelHealthMapScreen(),
       ),
       _DashboardAction(
         'Irrigation',
-        'System ready',
+        'Suivre les irrigations de vos parcelles',
         Icons.water_drop_outlined,
         const IrrigationScreen(),
       ),
       _DashboardAction(
+        'Planning irrigation IA',
+        "Planning adapté à la météo et à l'humidité",
+        Icons.calendar_month_outlined,
+        const IrrigationPlanningScreen(),
+      ),
+      _DashboardAction(
+        'Drone',
+        'Créer et gérer vos drones',
+        Icons.flight_rounded,
+        const DroneFormScreen(),
+      ),
+      _DashboardAction(
+        'Drone AI',
+        'Images du drone et diagnostic AI',
+        Icons.biotech_outlined,
+        const DroneAiScreen(),
+      ),
+      _DashboardAction(
         'Matériels',
-        '6 equipment items',
+        'Suivre vos équipements',
         Icons.handyman_outlined,
         const MaterielsScreen(),
+      ),
+      _DashboardAction(
+        'Maintenance',
+        "Carburant, maintenance et main d'œuvre",
+        Icons.build_circle_outlined,
+        const MaintenanceScreen(),
+      ),
+      _DashboardAction(
+        'Statistiques & IA',
+        'Carburant, maintenances prévues et durée de vie',
+        Icons.insights_outlined,
+        const EquipmentAnalyticsScreen(),
       ),
     ];
 
@@ -69,8 +92,8 @@ class DashboardScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           children: [
-            const Text(
-              'Good morning, farmer 👋',
+            Text(
+              'Bonjour${user == null ? '' : ', ${user.name}'} 👋',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 24,
@@ -78,31 +101,8 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            const Text('Here is your farm at a glance today.'),
+            const Text("Voici votre exploitation en un coup d'œil."),
             const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: forestGreen,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: const Row(
-                children: [
-                  Icon(Icons.wb_sunny_outlined, color: Color(0xFFFFD66B), size: 34),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      '24°C  •  Clear skies\nPerfect conditions for field work.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        height: 1.45,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             const SizedBox(height: 24),
             const Text(
               'Farm management',
