@@ -91,7 +91,7 @@ void main() {
       expect(result, contains('Analyse de la parcelle Test réussie'));
     });
 
-    test('returns null on API error', () async {
+    test('returns demo fallback on API error', () async {
       final mockClient = MockClient((request) async {
         return http.Response('Server Error', 500);
       });
@@ -113,7 +113,9 @@ void main() {
 
       final result = await service.analyzeParcelle(parcelle, []);
 
-      expect(result, isNull);
+      // Should fallback to demo response instead of returning null
+      expect(result, isNotNull);
+      expect(result, contains('argileux'));
     });
 
     test('includes anomalies in prompt', () async {

@@ -34,7 +34,7 @@ Réponds en 5 lignes maximum.''';
   ) async {
     try {
       // Si aucune clé API fournie, mode démo avec réponse simulée
-      if (_apiKey == null || _apiKey!.isEmpty) {
+      if (_apiKey == null || _apiKey.isEmpty) {
         print('DEBUG Groq: No API key, using demo mode');
         return _getDemoResponse(parcelle, ruleBasedAnomalies);
       }
@@ -72,7 +72,11 @@ Réponds en 5 lignes maximum.''';
           final firstChoice = choices[0] as Map<String, dynamic>;
           final message = firstChoice['message'] as Map<String, dynamic>?;
           final content = message?['content'] as String?;
-          print('DEBUG Groq: Got content: ${content?.substring(0, 50)}...');
+          if (content != null && content.length > 50) {
+            print('DEBUG Groq: Got content: ${content.substring(0, 50)}...');
+          } else {
+            print('DEBUG Groq: Got content: $content');
+          }
           return content;
         }
       } else {
