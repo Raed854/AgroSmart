@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../models/user_model.dart';
+import '../services/auth_service.dart';
 import '../widgets/brand_header.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  Future<void> _signOut(BuildContext context) async {
+    await AuthService().signOut();
+    if (!context.mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = AuthService().currentUser ?? const UserModel(
+      name: 'Guest',
+      email: '',
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: pageBackground,
@@ -26,17 +43,17 @@ class ProfileScreen extends StatelessWidget {
             child: Icon(Icons.person_rounded, color: forestGreen, size: 44),
           ),
           const SizedBox(height: 14),
-          const Center(
+          Center(
             child: Text(
-              'Alex Morgan',
-              style: TextStyle(
+              user.name,
+              style: const TextStyle(
                 color: inkGreen,
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
-          const Center(child: Text('alex@greensmart.farm')),
+          Center(child: Text(user.email)),
           const SizedBox(height: 28),
           Card(
             elevation: 0,
@@ -45,20 +62,43 @@ class ProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               side: const BorderSide(color: borderGreen),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 ListTile(
-                  leading: Icon(Icons.business_outlined, color: forestGreen),
-                  title: Text('Farm'),
-                  subtitle: Text('Green Valley Farm'),
+                  leading: const Icon(
+                    Icons.business_outlined,
+                    color: forestGreen,
+                  ),
+                  title: const Text('Farm'),
+                  subtitle: Text(user.farmName),
                 ),
-                Divider(height: 1, color: borderGreen),
-                ListTile(
+                const Divider(height: 1, color: borderGreen),
+                const ListTile(
                   leading: Icon(Icons.language_rounded, color: forestGreen),
                   title: Text('Language'),
                   subtitle: Text('English'),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            elevation: 0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+              side: const BorderSide(color: borderGreen),
+            ),
+            child: ListTile(
+              leading: const Icon(Icons.logout_rounded, color: Color(0xFFD66555)),
+              title: const Text(
+                'Sign out',
+                style: TextStyle(
+                  color: Color(0xFFD66555),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              onTap: () => _signOut(context),
             ),
           ),
         ],

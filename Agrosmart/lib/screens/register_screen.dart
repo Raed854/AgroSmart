@@ -33,13 +33,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _register() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _isRegistering = true);
-    await _authService.register(
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-    );
-    if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/dashboard');
+    try {
+      await _authService.register(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: const Color(0xFFD66555),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isRegistering = false);
+    }
   }
 
   @override

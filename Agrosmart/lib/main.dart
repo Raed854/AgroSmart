@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'firebase_options.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
@@ -11,7 +13,9 @@ const mutedGreen = Color(0xFF6E7F72);
 const pageBackground = Color(0xFFF8F7F1);
 const borderGreen = Color(0xFFE4E9E1);
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const AgroSmartApp());
 }
 

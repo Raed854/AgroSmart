@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../services/auth_service.dart';
+import 'agriculteurs_screen.dart';
 import 'cultures_screen.dart';
 import 'irrigation_screen.dart';
 import 'materiels_screen.dart';
@@ -13,7 +15,14 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final firstName = AuthService().currentUser?.name.split(' ').first;
     final actions = [
+      _DashboardAction(
+        'Agriculteurs',
+        '2 farmer profiles',
+        Icons.groups_rounded,
+        const AgriculteursScreen(),
+      ),
       _DashboardAction(
         'Parcelles',
         '4 plots',
@@ -69,9 +78,9 @@ class DashboardScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           children: [
-            const Text(
-              'Good morning, farmer 👋',
-              style: TextStyle(
+            Text(
+              'Good morning, ${firstName ?? 'farmer'} 👋',
+              style: const TextStyle(
                 color: inkGreen,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
