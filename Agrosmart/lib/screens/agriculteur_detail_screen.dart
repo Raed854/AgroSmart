@@ -7,10 +7,6 @@ import '../services/ai_service.dart';
 import '../widgets/brand_header.dart';
 import '../widgets/custom_button.dart';
 import 'agriculteur_form_screen.dart';
-import 'cultures_screen.dart';
-import 'materiels_screen.dart';
-import 'parcelles_screen.dart';
-import 'recoltes_screen.dart';
 
 class AgriculteurDetailScreen extends StatefulWidget {
   const AgriculteurDetailScreen({super.key, required this.agriculteurId});
@@ -236,51 +232,6 @@ class _AgriculteurDetailScreenState extends State<AgriculteurDetailScreen> {
                     ],
             ),
             const SizedBox(height: 20),
-            Text(
-              'Activities & resources',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _ShortcutCard(
-                    icon: Icons.landscape_outlined,
-                    label: 'Parcelles',
-                    screen: const ParcellesScreen(),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _ShortcutCard(
-                    icon: Icons.grass_rounded,
-                    label: 'Cultures',
-                    screen: const CulturesScreen(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _ShortcutCard(
-                    icon: Icons.agriculture_rounded,
-                    label: 'Récoltes',
-                    screen: const RecoltesScreen(),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _ShortcutCard(
-                    icon: Icons.handyman_outlined,
-                    label: 'Matériels',
-                    screen: const MaterielsScreen(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
             Card(
               elevation: 0,
               color: Colors.white,
@@ -391,47 +342,3 @@ class _InfoTile extends StatelessWidget {
   }
 }
 
-class _ShortcutCard extends StatelessWidget {
-  const _ShortcutCard({
-    required this.icon,
-    required this.label,
-    required this.screen,
-  });
-
-  final IconData icon;
-  final String label;
-  final Widget screen;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => screen),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: borderGreen),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: forestGreen),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: inkGreen,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

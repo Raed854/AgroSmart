@@ -11,7 +11,7 @@ import '../models/agriculteur_model.dart';
 ///   flutter run -d edge --dart-define=GEMINI_API_KEY=your_key
 class AiService {
   static const _apiKey = String.fromEnvironment('GEMINI_API_KEY');
-  static const _model = 'gemini-2.0-flash';
+  static const _model = 'gemini-flash-latest';
   static const _endpoint =
       'https://generativelanguage.googleapis.com/v1beta/models/'
       '$_model:generateContent';

@@ -3,12 +3,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../services/auth_service.dart';
 import 'agriculteurs_screen.dart';
-import 'cultures_screen.dart';
-import 'irrigation_screen.dart';
-import 'materiels_screen.dart';
-import 'parcelles_screen.dart';
 import 'profile_screen.dart';
-import 'recoltes_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -22,36 +17,6 @@ class DashboardScreen extends StatelessWidget {
         '2 farmer profiles',
         Icons.groups_rounded,
         const AgriculteursScreen(),
-      ),
-      _DashboardAction(
-        'Parcelles',
-        '4 plots',
-        Icons.landscape_outlined,
-        const ParcellesScreen(),
-      ),
-      _DashboardAction(
-        'Cultures',
-        '8 active crops',
-        Icons.grass_rounded,
-        const CulturesScreen(),
-      ),
-      _DashboardAction(
-        'Récoltes',
-        'Next in 12 days',
-        Icons.agriculture_rounded,
-        const RecoltesScreen(),
-      ),
-      _DashboardAction(
-        'Irrigation',
-        'System ready',
-        Icons.water_drop_outlined,
-        const IrrigationScreen(),
-      ),
-      _DashboardAction(
-        'Matériels',
-        '6 equipment items',
-        Icons.handyman_outlined,
-        const MaterielsScreen(),
       ),
     ];
 
