@@ -35,6 +35,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Persistance SQLite locale
+  sqflite: ^2.4.1
+  # Chemin vers la base de données sur le device
+  path_provider: ^2.1.5
+  # Utilitaire de chemins de fichiers (utilisé par stock_database.dart)
+  path: ^1.9.0
+  # Formatage des dates en français
+  intl: ^0.20.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
@@ -11,7 +12,9 @@ const mutedGreen = Color(0xFF6E7F72);
 const pageBackground = Color(0xFFF8F7F1);
 const borderGreen = Color(0xFFE4E9E1);
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('fr_FR');
   runApp(const AgroSmartApp());
 }
 
@@ -26,14 +29,15 @@ class AgroSmartApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: pageBackground,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: freshGreen,
-          brightness: Brightness.light,
-        ).copyWith(
-          primary: forestGreen,
-          onPrimary: Colors.white,
-          surface: Colors.white,
-        ),
+        colorScheme:
+            ColorScheme.fromSeed(
+              seedColor: freshGreen,
+              brightness: Brightness.light,
+            ).copyWith(
+              primary: forestGreen,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+            ),
         textTheme: const TextTheme(
           headlineMedium: TextStyle(
             color: inkGreen,
@@ -46,11 +50,7 @@ class AgroSmartApp extends StatelessWidget {
             fontSize: 18,
             fontWeight: FontWeight.w800,
           ),
-          bodyMedium: TextStyle(
-            color: mutedGreen,
-            fontSize: 14,
-            height: 1.45,
-          ),
+          bodyMedium: TextStyle(color: mutedGreen, fontSize: 14, height: 1.45),
         ),
       ),
       initialRoute: '/login',

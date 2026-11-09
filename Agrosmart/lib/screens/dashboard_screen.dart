@@ -1,48 +1,54 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
-import 'cultures_screen.dart';
-import 'irrigation_screen.dart';
-import 'materiels_screen.dart';
-import 'parcelles_screen.dart';
+import '../services/stock_service.dart';
 import 'profile_screen.dart';
-import 'recoltes_screen.dart';
+import 'stock_assistant_screen.dart';
+import 'stocks_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  int _stockAlertCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAlertCount();
+  }
+
+  Future<void> _loadAlertCount() async {
+    try {
+      final count = await StockService.instance.getAlertCount();
+      if (mounted) setState(() => _stockAlertCount = count);
+    } catch (_) {
+      // Si la base n'est pas encore initialisée, on ignore silencieusement
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final actions = [
       _DashboardAction(
-        'Parcelles',
-        '4 plots',
-        Icons.landscape_outlined,
-        const ParcellesScreen(),
+        'Stocks',
+        _stockAlertCount > 0
+            ? '$_stockAlertCount alerte(s) active(s)'
+            : 'Inventaire à jour',
+        Icons.inventory_2_outlined,
+        const StocksScreen(),
+        _stockAlertCount,
       ),
-      _DashboardAction(
-        'Cultures',
-        '8 active crops',
-        Icons.grass_rounded,
-        const CulturesScreen(),
-      ),
-      _DashboardAction(
-        'Récoltes',
-        'Next in 12 days',
-        Icons.agriculture_rounded,
-        const RecoltesScreen(),
-      ),
-      _DashboardAction(
-        'Irrigation',
-        'System ready',
-        Icons.water_drop_outlined,
-        const IrrigationScreen(),
-      ),
-      _DashboardAction(
-        'Matériels',
-        '6 equipment items',
-        Icons.handyman_outlined,
-        const MaterielsScreen(),
+      const _DashboardAction(
+        'Assistant stock',
+        'Poser une question sur l’inventaire',
+        Icons.forum_outlined,
+        StockAssistantScreen(),
+        0,
       ),
     ];
 
@@ -70,7 +76,7 @@ class DashboardScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           children: [
             const Text(
-              'Good morning, farmer 👋',
+              'Bonjour',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 24,
@@ -78,34 +84,10 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            const Text('Here is your farm at a glance today.'),
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: forestGreen,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: const Row(
-                children: [
-                  Icon(Icons.wb_sunny_outlined, color: Color(0xFFFFD66B), size: 34),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      '24°C  •  Clear skies\nPerfect conditions for field work.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        height: 1.45,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const Text('Sélectionnez un module pour consulter vos données.'),
             const SizedBox(height: 24),
             const Text(
-              'Farm management',
+              'Modules',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 18,
@@ -139,11 +121,40 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(action.subtitle),
-                  trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => action.screen),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (action.alertCount > 0)
+                        Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE53935),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${action.alertCount}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      const Icon(Icons.chevron_right_rounded),
+                    ],
                   ),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => action.screen),
+                    );
+                    // Rafraîchit le badge après retour des Stocks
+                    _loadAlertCount();
+                  },
                 ),
               ),
             ),
@@ -155,10 +166,17 @@ class DashboardScreen extends StatelessWidget {
 }
 
 class _DashboardAction {
-  const _DashboardAction(this.title, this.subtitle, this.icon, this.screen);
+  const _DashboardAction(
+    this.title,
+    this.subtitle,
+    this.icon,
+    this.screen,
+    this.alertCount,
+  );
 
   final String title;
   final String subtitle;
   final IconData icon;
   final Widget screen;
+  final int alertCount;
 }
