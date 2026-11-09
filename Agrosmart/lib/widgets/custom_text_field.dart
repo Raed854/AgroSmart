@@ -56,10 +56,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: _border(),
         focusedBorder: _border(color: freshGreen, width: 1.5),
         errorBorder: _border(color: const Color(0xFFD66555)),
-        focusedErrorBorder: _border(
-          color: const Color(0xFFD66555),
-          width: 1.5,
-        ),
+        focusedErrorBorder: _border(color: const Color(0xFFD66555), width: 1.5),
       ),
     );
   }

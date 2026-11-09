@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../services/stock_service.dart';
+import '../services/auth_service.dart';
+import 'drone_ai_screen.dart';
+import 'drone_form_screen.dart';
+import 'equipment_analytics_screen.dart';
+import 'irrigation_planning_screen.dart';
+import 'irrigation_screen.dart';
+import 'maintenance_screen.dart';
+import 'materiels_screen.dart';
+import 'parcel_health_map_screen.dart';
 import 'profile_screen.dart';
 import 'stock_assistant_screen.dart';
 import 'stocks_screen.dart';
@@ -33,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = AuthService.currentUser;
     final actions = [
       _DashboardAction(
         'Stocks',
@@ -48,6 +58,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'Poser une question sur l’inventaire',
         Icons.forum_outlined,
         StockAssistantScreen(),
+        0,
+      ),
+      const _DashboardAction(
+        'Parcel Health Map',
+        'AI anomaly detection',
+        Icons.map_outlined,
+        const ParcelHealthMapScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Irrigation',
+        'Suivre les irrigations de vos parcelles',
+        Icons.water_drop_outlined,
+        const IrrigationScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Planning irrigation IA',
+        "Planning adapté à la météo et à l'humidité",
+        Icons.calendar_month_outlined,
+        const IrrigationPlanningScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Drone',
+        'Créer et gérer vos drones',
+        Icons.flight_rounded,
+        const DroneFormScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Drone AI',
+        'Images du drone et diagnostic AI',
+        Icons.biotech_outlined,
+        const DroneAiScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Matériels',
+        'Suivre vos équipements',
+        Icons.handyman_outlined,
+        const MaterielsScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Maintenance',
+        "Carburant, maintenance et main d'œuvre",
+        Icons.build_circle_outlined,
+        const MaintenanceScreen(),
+        0,
+      ),
+      _DashboardAction(
+        'Statistiques & IA',
+        'Carburant, maintenances prévues et durée de vie',
+        Icons.insights_outlined,
+        const EquipmentAnalyticsScreen(),
         0,
       ),
     ];
@@ -75,8 +141,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           children: [
-            const Text(
-              'Bonjour',
+            Text(
+              'Bonjour${user == null ? '' : ', ${user.name}'} 👋',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 24,
@@ -84,7 +150,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            const Text('Sélectionnez un module pour consulter vos données.'),
+            const Text("Voici votre exploitation en un coup d'œil."),
             const SizedBox(height: 24),
             const Text(
               'Modules',

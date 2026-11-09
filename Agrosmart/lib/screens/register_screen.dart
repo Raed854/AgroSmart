@@ -75,10 +75,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   label: 'Full name',
                   hint: 'Enter your name',
                   icon: Icons.person_outline_rounded,
-                  validator: (value) =>
-                      value == null || value.trim().isEmpty
-                          ? 'Please enter your name'
-                          : null,
+                  validator: (value) => value == null || value.trim().isEmpty
+                      ? 'Please enter your name'
+                      : null,
                 ),
                 const SizedBox(height: 14),
                 CustomTextField(
@@ -102,9 +101,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   icon: Icons.lock_outline_rounded,
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
-                    onPressed: () => setState(
-                      () => _obscurePassword = !_obscurePassword,
-                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                     icon: Icon(
                       _obscurePassword
                           ? Icons.visibility_outlined

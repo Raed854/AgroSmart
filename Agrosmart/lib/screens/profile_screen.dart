@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../services/auth_service.dart';
 import '../widgets/brand_header.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -8,6 +9,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = AuthService.currentUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: pageBackground,
@@ -26,9 +28,9 @@ class ProfileScreen extends StatelessWidget {
             child: Icon(Icons.person_rounded, color: forestGreen, size: 44),
           ),
           const SizedBox(height: 14),
-          const Center(
+          Center(
             child: Text(
-              'Alex Morgan',
+              user?.name ?? 'Non connecté',
               style: TextStyle(
                 color: inkGreen,
                 fontSize: 20,
@@ -36,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          const Center(child: Text('alex@greensmart.farm')),
+          if (user != null) Center(child: Text(user.email)),
           const SizedBox(height: 28),
           Card(
             elevation: 0,
@@ -45,15 +47,18 @@ class ProfileScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               side: const BorderSide(color: borderGreen),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 ListTile(
-                  leading: Icon(Icons.business_outlined, color: forestGreen),
-                  title: Text('Farm'),
-                  subtitle: Text('Green Valley Farm'),
+                  leading: const Icon(
+                    Icons.business_outlined,
+                    color: forestGreen,
+                  ),
+                  title: const Text('Farm'),
+                  subtitle: Text(user?.farmName ?? 'Non renseignée'),
                 ),
-                Divider(height: 1, color: borderGreen),
-                ListTile(
+                const Divider(height: 1, color: borderGreen),
+                const ListTile(
                   leading: Icon(Icons.language_rounded, color: forestGreen),
                   title: Text('Language'),
                   subtitle: Text('English'),
