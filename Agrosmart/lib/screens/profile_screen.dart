@@ -7,9 +7,20 @@ import '../widgets/brand_header.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  Future<void> _signOut(BuildContext context) async {
+    await AuthService().signOut();
+    if (!context.mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.currentUser;
+    final user = AuthService().currentUser;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: pageBackground,
@@ -31,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
           Center(
             child: Text(
               user?.name ?? 'Non connecté',
-              style: TextStyle(
+              style: const TextStyle(
                 color: inkGreen,
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
@@ -64,6 +75,26 @@ class ProfileScreen extends StatelessWidget {
                   subtitle: Text('English'),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            elevation: 0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+              side: const BorderSide(color: borderGreen),
+            ),
+            child: ListTile(
+              leading: const Icon(Icons.logout_rounded, color: Color(0xFFD66555)),
+              title: const Text(
+                'Sign out',
+                style: TextStyle(
+                  color: Color(0xFFD66555),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              onTap: () => _signOut(context),
             ),
           ),
         ],

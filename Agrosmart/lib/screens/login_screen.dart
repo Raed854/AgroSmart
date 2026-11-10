@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _authService = AuthService();
   bool _obscurePassword = true;
   bool _isSigningIn = false;
+  bool _isSigningInWithGoogle = false;
 
   @override
   void dispose() {
@@ -32,21 +33,41 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signIn() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => _isSigningIn = true);
-    await _authService.signIn(
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-    );
-    if (!mounted) return;
-    setState(() => _isSigningIn = false);
-    Navigator.pushReplacementNamed(context, '/dashboard');
+    try {
+      await _authService.signIn(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      _showMessage(e.message, isError: true);
+    } finally {
+      if (mounted) setState(() => _isSigningIn = false);
+    }
   }
 
-  void _showMessage(String message) {
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isSigningInWithGoogle = true);
+    try {
+      await _authService.signInWithGoogle();
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      _showMessage(e.message, isError: true);
+    } finally {
+      if (mounted) setState(() => _isSigningInWithGoogle = false);
+    }
+  }
+
+  void _showMessage(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: forestGreen,
+        backgroundColor: isError ? const Color(0xFFD66555) : forestGreen,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     );
@@ -169,8 +190,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         CustomButton(
                           label: 'Continue with Google',
                           outlined: true,
-                          onPressed: () =>
-                              _showMessage('Google sign-in is coming soon.'),
+                          isLoading: _isSigningInWithGoogle,
+                          onPressed:
+                              _isSigningInWithGoogle ? null : _signInWithGoogle,
                           icon: const Text(
                             'G',
                             style: TextStyle(

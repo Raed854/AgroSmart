@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../services/stock_service.dart';
 import '../services/auth_service.dart';
+import 'agriculteurs_screen.dart';
 import 'drone_ai_screen.dart';
 import 'drone_form_screen.dart';
 import 'equipment_analytics_screen.dart';
@@ -43,8 +44,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.currentUser;
+    final user = AuthService().currentUser;
     final actions = [
+      const _DashboardAction(
+        'Agriculteurs',
+        'Gérer les profils des agriculteurs',
+        Icons.groups_rounded,
+        AgriculteursScreen(),
+        0,
+      ),
       const _DashboardAction(
         'Parcelles',
         'Gérer vos parcelles et l’assistant IA',
@@ -151,7 +159,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Text(
               'Bonjour${user == null ? '' : ', ${user.name}'} 👋',
-              style: TextStyle(
+              style: const TextStyle(
                 color: inkGreen,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,

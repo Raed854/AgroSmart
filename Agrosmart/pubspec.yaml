@@ -53,6 +53,14 @@ dependencies:
   # Environment variables (.env, GROQ_API_KEY)
   flutter_dotenv: ^5.1.0
 
+  # Password hashing for local account authentication.
+  crypto: ^3.0.3
+
+  # Google Sign-In via Firebase Auth.
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  google_sign_in: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,8 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'config/app_config.dart';
+import 'firebase_options.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/parcel_health_map_screen.dart';
@@ -49,6 +51,7 @@ Future<void> main() async {
   await AppConfig.load();
   await initializeDateFormatting('fr_FR');
   await dotenv.load(fileName: '.env');
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const AgroSmartApp());
 }
 
